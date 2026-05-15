@@ -198,7 +198,7 @@ Context:
 Question: {query}
 
 Answer:"""
-try:
+    try:
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
@@ -233,5 +233,5 @@ try:
             <div class="answer-text">{final_answer}</div>
         </div>
         """, unsafe_allow_html=True)
-except Exception as e:
-    st.error(str(e))
+    except Exception as e:
+      st.error(str(e))
