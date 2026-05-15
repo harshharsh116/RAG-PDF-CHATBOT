@@ -233,5 +233,5 @@ Answer:"""
             <div class="answer-text">{final_answer}</div>
         </div>
         """, unsafe_allow_html=True)
- elif query:
+elif query:
     st.warning("Please upload PDF first.")       
