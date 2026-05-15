@@ -208,7 +208,7 @@ try:
                 }
             ],
             temperature=0.1,
-            max_tokens=120
+            max_tokens=350
         )
 
         generated_text = response.choices[0].message.content
