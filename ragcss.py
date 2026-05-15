@@ -4,7 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 import tempfile
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-from transformers import pipeline
+from groq import Groq
 st.set_page_config(
     page_title="RAG PDF CHATBOT",
     page_icon="📚",
@@ -171,24 +171,11 @@ if uploaded_files and b1:
     st.write("Total Chunks:", len(docs))
 
 query = st.text_input("Ask a Question")
-@st.cache_resource
-def load_llm():
-    llm = pipeline(
-        "text-generation",
-        model="Qwen/Qwen2.5-1.5B-Instruct",
-        device_map="auto",
-        trust_remote_code=True,
-        torch_dtype="auto",
-    )
-
-    return llm
 
 
-
-
-
-llm = load_llm()
-
+client = Groq(
+    api_key=st.secrets["GROQ_API_KEY"]
+)
 if query and st.session_state.vectors is not None:
     with st.spinner("Generating Answer..."):
         retriever = st.session_state.vectors.as_retriever(
@@ -212,15 +199,19 @@ Question: {query}
 
 Answer:"""
 
-        response = llm(
-            prompt,
-            max_new_tokens=350,  # Reduced
-            temperature=0.1,  # Lower = more focused
-            do_sample=False,
-            top_p=0.9
+        response = client.chat.completions.create(
+            model="gemma2-9b-it",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            temperature=0.1,
+            max_tokens=120
         )
 
-        generated_text = response[0]["generated_text"]
+        generated_text = response.choices[0].message.content
 
         # Clean the answer
         if prompt in generated_text:
