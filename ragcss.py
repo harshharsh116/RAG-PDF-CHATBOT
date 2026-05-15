@@ -198,9 +198,9 @@ Context:
 Question: {query}
 
 Answer:"""
-
+try:
         response = client.chat.completions.create(
-            model="gemma2-9b-it",
+            model="llama3-8b-8192",
             messages=[
                 {
                     "role": "user",
@@ -233,3 +233,5 @@ Answer:"""
             <div class="answer-text">{final_answer}</div>
         </div>
         """, unsafe_allow_html=True)
+except Exception as e:
+    st.error(str(e))
